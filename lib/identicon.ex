@@ -5,7 +5,8 @@ defmodule Identicon do
   end
 
   def hash_input(input) do
-    # :crypto.hash returns an md5 hash, which :binary.bin_to_list takes as an argument
+    # :crypto.hash takes an input and returns an md5 hash,
+    # which :binary.bin_to_list takes as an argument
     :crypto.hash(:md5, input)
     |> :binary.bin_to_list()
   end
