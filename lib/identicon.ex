@@ -6,6 +6,27 @@ defmodule Identicon do
     |> build_grid()
     |> filter_odd_squares()
     |> build_pixel_map()
+    |> draw_image()
+    |> save_image(input)
+  end
+
+  def save_image(image, input) do
+    File.write("#{input}.png", image)
+  end
+
+  def draw_image(%Identicon.Image{color: color, pixel_map: pixel_map}) do
+    # create the image with a width of 250 and height of 250
+    image = :egd.create(250, 250)
+    # set the color to fill as the color from our Image struct
+    fill = :egd.color(color)
+    # loop over each color in the pixel_map and fill that rectangle with our color
+    Enum.each(pixel_map, fn {start, stop} ->
+      # this is actually modifying the image variable in place (super odd for Elixir)
+      :egd.filledRectangle(image, start, stop, fill)
+    end)
+
+    # render the image
+    :egd.render(image)
   end
 
   def build_pixel_map(%Identicon.Image{grid: grid} = image) do
