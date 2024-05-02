@@ -3,6 +3,22 @@ defmodule Identicon do
     input
     |> hash_input()
     |> pick_color()
+    |> build_grid()
+  end
+
+  def build_grid(%Identicon.Image{hex: hex} = _image) do
+    hex
+    |> Enum.chunk_every(3, 3, :discard)
+    # use ampersand to tell Elixir that you're passing a reference to a function
+    # if there were multiple mirror_row methods, we tell Elixir that we want the one with an arity of 1
+    |> Enum.map(&mirror_row/1)
+  end
+
+  defp mirror_row(row) do
+    # defp means define a private method
+    [first, second | _tail] = row
+    ## take the row list and append the second and first element to the end
+    row ++ [second, first]
   end
 
   ## Pattern match the image as an argument
