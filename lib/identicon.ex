@@ -4,6 +4,15 @@ defmodule Identicon do
     |> hash_input()
     |> pick_color()
     |> build_grid()
+    |> filter_odd_squares()
+  end
+
+  def filter_odd_squares(%Identicon.Image{grid: grid} = image) do
+    # returns only values in the list that are divisible by 2 (even)
+    # rem calculates remainder (modulo)
+    grid = Enum.filter(grid, fn {hex, _index} -> rem(hex, 2) == 0 end)
+
+    %Identicon.Image{image | grid: grid}
   end
 
   def build_grid(%Identicon.Image{hex: hex} = image) do
