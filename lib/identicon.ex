@@ -6,12 +6,19 @@ defmodule Identicon do
     |> build_grid()
   end
 
-  def build_grid(%Identicon.Image{hex: hex} = _image) do
-    hex
-    |> Enum.chunk_every(3, 3, :discard)
-    # use ampersand to tell Elixir that you're passing a reference to a function
-    # if there were multiple mirror_row methods, we tell Elixir that we want the one with an arity of 1
-    |> Enum.map(&mirror_row/1)
+  def build_grid(%Identicon.Image{hex: hex} = image) do
+    grid =
+      hex
+      |> Enum.chunk_every(3, 3, :discard)
+      # use ampersand to tell Elixir that you're passing a reference to a function
+      # if there were multiple mirror_row methods, we tell Elixir that we want the one with an arity of 1
+      |> Enum.map(&mirror_row/1)
+      |> List.flatten()
+      # converts the list into a list of two value tuples
+      # each tuple contains the value and its index
+      |> Enum.with_index()
+
+    %Identicon.Image{image | grid: grid}
   end
 
   defp mirror_row(row) do
